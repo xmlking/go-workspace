@@ -6,6 +6,6 @@ import (
 )
 
 func TestMax(t *testing.T) {
-	fmt.Println(Max(1, 3))
+	fmt.Println(Max(1, 5))
 	fmt.Println(Min(1, 3))
 }
