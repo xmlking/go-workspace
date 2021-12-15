@@ -10,5 +10,5 @@ func main() {
 	vi = filter.FilterFunc(vi, func(v int) bool {
 		return v < 4
 	})
-	log.Println(vi)
+	log.Print(vi)
 }

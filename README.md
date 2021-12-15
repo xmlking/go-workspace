@@ -1,10 +1,19 @@
 # go-workspace
+
 Experimenting with **golang-1.18** _multi-module workspaces_
 
 
-## golang 1.18
+## Run
 
-### workspace commands
+###
+```bash
+go test -v ./lib/...
+go run ./cmd/app1/...
+go run ./cmd/app2/...
+```
+
+
+### Workspace commands
 
 ```
 $ go help work
@@ -21,18 +30,27 @@ The commands are:
 
 ```
 
-### Example 
+### Project structure 
 
 ```
 .
 ├── README.md
 ├── cmd
 │   ├── app1
-│   │   └── go.mod
+│   │   ├── go.mod
+│   │   └── main.go
 │   └── app2
-│       └── go.mod
+│       ├── go.mod
+│       └── main.go
 ├── go.work
+├── go.work.sum
 └── lib
+    ├── binaryheap
+    │   ├── binaryheap.go
+    │   └── binaryheap_test.go
+    ├── filter
+    │   ├── filter.go
+    │   └── filter_test.go
     └── go.mod
 
 ```
