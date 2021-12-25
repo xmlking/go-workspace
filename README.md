@@ -2,6 +2,7 @@
 
 Experimenting with **golang-1.18** _multi-module workspaces_
 
+[![Go](https://github.com/xmlking/go-workspace/actions/workflows/go.yml/badge.svg)](https://github.com/xmlking/go-workspace/actions/workflows/go.yml)
 
 ## Run
 
