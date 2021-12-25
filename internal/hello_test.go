@@ -18,8 +18,8 @@ func FuzzMinMax(f *testing.F) {
 
 	// Run the fuzz test
 	f.Fuzz(func(t *testing.T, a int, b int) {
-		min := Min(1, 3)
-		max := Max(1, 3)
+		min := Min(a, b)
+		max := Max(a, b)
 		if min > max {
 			t.Errorf("min: %v shoud be less then max: %v", min, max)
 		}
