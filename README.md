@@ -20,7 +20,12 @@ go run ./cmd/app1/...
 go run ./cmd/app2/...
 ```
 
-
+```bash
+go build -v .
+go build -v -ldflags "-w -s -X main.Version=qqq -X main.BuildDate=2022-01-18T18:05:56Z -X main.GitCommit=5f16c94 -X main.GitBranch=develop -X main.GitState=dirty -X main.GitSummary=v0.1.0-74-g5f16c94-dirty" .
+# check SBOM
+go version -m go-workspace
+```
 ### Workspace commands
 
 ```
