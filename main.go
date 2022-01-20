@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"runtime/debug"
 	"strconv"
+	"time"
 
 	"github.com/rs/zerolog/log"
 	"github.com/ssoroka/slice"
@@ -70,18 +71,32 @@ func versionInfo() {
 	//}
 	//fmt.Println(string(op))
 
-	//info, ok := debug.ReadBuildInfo()
-	//if !ok {
-	//	return
-	//}
-	//fmt.Println(info)
-	//fmt.Println(info.GoVersion)
-	//fmt.Println(info.Path)
-	//fmt.Println(info.Main)
-	//fmt.Println("version: " + info.Main.Version)
-	//fmt.Println(info.Main.Path)
-	//fmt.Println(info.Main.Sum)
-	//fmt.Println(info.Main.Replace)
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return
+	}
+	fmt.Println(info)
+	fmt.Println(info.GoVersion)
+	fmt.Println(info.Path)
+	fmt.Println(info.Main)
+	fmt.Println("version: " + info.Main.Version)
+	fmt.Println(info.Main.Path)
+	fmt.Println(info.Main.Sum)
+	fmt.Println(info.Main.Replace)
+
+	for _, kv := range info.Settings {
+		switch kv.Key {
+		case "vcs.revision":
+			fmt.Printf("Revision: %s", kv.Value)
+		case "vcs.time":
+			LastCommit, _ := time.Parse(time.RFC3339, kv.Value)
+			fmt.Printf("LastCommit: %s", LastCommit)
+		case "vcs.modified":
+			DirtyBuild := kv.Value == "true"
+			fmt.Printf("DirtyBuild: %v", DirtyBuild)
+		}
+	}
+
 	//for _, dep := range info.Deps {
 	//	fmt.Println(*dep)
 	//}
