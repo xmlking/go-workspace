@@ -1,97 +1,121 @@
 package version
 
 import (
+	_ "embed"
+	"encoding/json"
 	"fmt"
 	"runtime"
 	"runtime/debug"
+	"strings"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
+
+//go:generate sh -c "git describe --tags --dirty --always > version.txt"
+//go:generate sh -c "git branch --show-current > branch.txt"
 
 var (
-	// Version is populated by govvv in compile-time.
-	Version = "untouched" // "v1.23.1"
-	// BuildDate is populated by govvv.
-	BuildDate string // "2021-12-16T11:41:01Z"
-	// GitCommit is populated by govvv.
-	GitCommit string // "86ec240af8cbd1b60bcc4c03c20da9b98005b92e"
-	// GitBranch is populated by govvv.
-	GitBranch string
-	// GitState is populated by govvv.
-	GitState string // "clean"
-	// GitSummary is populated by govvv.
-	GitSummary string // v1.0.0, v1.0.1-5-g585c78f-dirty, fbd157c
-	// GoVersion is populated by govvv.
-	GoVersion string // "go1.17.5"
-	// Compiler is populated by govvv.
-	Compiler string // "gc"
-	// Platform is populated by govvv.
-	Platform string // "darwin/amd64"
+	//go:embed version.txt
+	vcsTag      string
+	vcsTime     string
+	vcsRevision string
+	//go:embed branch.txt
+	vcsBranch   string
+	vcsModified bool = true
+	goVersion   string
+	goCompiler  string
+	goOS        string
+	goArch      string
 )
 
-type VersionInfo struct {
-	GitVersion   string
-	GitCommit    string
-	GitTreeState string
-	BuildDate    string
-	GoVersion    string
-	Compiler     string
-	Platform     string
+func init() {
+	goVersion = runtime.Version()
+	goCompiler = runtime.Compiler
+	goOS = runtime.GOOS
+	goArch = runtime.GOARCH
+
+	if info, ok := debug.ReadBuildInfo(); ok {
+		if info.Main.Version != "(devel)" {
+			vcsTag = info.Main.Version
+		}
+	} else {
+		log.Warn().Msg("not built in module mode")
+	}
 }
 
-// VersionMsg is the message that is shown after process started.
-const versionMsg = `
-version     : %s
-build date  : %s
-go version  : %s
-go compiler : %s
-platform    : %s/%s
-git commit  : %s
-git branch  : %s
-git state   : %s
-git summary : %s
+// BuildInfo show build status at *compile-time*
+type BuildInfo struct {
+	// GitVersion is populated from VCS. e.g., "v1.0.0" or "v1.1.2-dirty" or "v1.0.1-5-g585c78f-dirty" or "fbd157c"
+	GitVersion string `json:"tag"`
+	// GitCommit is populated from VCS. e.g., "86ec240af8cbd1b60bcc4c03c20da9b98005b92e"
+	GitCommit string `json:"commit"`
+	// GitBranch is populated from VCS
+	GitBranch string `json:"branch"`
+	// GitState will be "clean" or "dirty" based on if codebase is modified after commit
+	GitState string `json:"state"`
+	// GitBuildTime is populated from last VCS commit time. e.g., "2021-12-16T11:41:01Z"
+	GitBuildTime string `json:"build_time"`
+	// GoVersion is populated build-time go version. e.g.,  "go1.17.5"
+	GoVersion string `json:"go_version"`
+	// GoCompiler is populated build-time go compiler. e.g., "gc" or "gccgo"
+	GoCompiler string `json:"compiler"`
+	// GoPlatform is populated build-time go platform. e.g., "darwin/amd64"
+	GoPlatform string `json:"platform"`
+}
+
+func (b BuildInfo) String() string {
+	buf, err := json.Marshal(b)
+	if err != nil {
+		log.Fatal().Err(err).Msg("BuildInfo Marshal failed")
+	}
+	return string(buf)
+}
+
+func (b BuildInfo) MarshalZerologObject(e *zerolog.Event) {
+	e.Str("tag", b.GitVersion).
+		Str("commit", b.GitCommit).
+		Str("branch", b.GitBranch).
+		Str("state", b.GitState).
+		Str("build_time", b.GitBuildTime).
+		Str("go_version", b.GoVersion).
+		Str("compiler", b.GoCompiler).
+		Str("platform", b.GoPlatform)
+}
+
+// buildInfoTmpl is the message that is shown after process started.
+const buildInfoTmpl = `
+git tag         : %s
+git build-time  : %s
+git commit      : %s
+git branch      : %s
+git state       : %s
+go version      : %s
+go compiler     : %s
+go platform     : %s
 `
 
+func (b BuildInfo) PrettyString() string {
+	return fmt.Sprintf(buildInfoTmpl, b.GitVersion, b.GitBuildTime, b.GitCommit, b.GitBranch, b.GitState, b.GoVersion, b.GoCompiler, b.GoPlatform)
+}
+
 // GetBuildInfo helper
-func GetBuildInfo() string {
-	return fmt.Sprintf(versionMsg, Version, BuildDate, runtime.Version(), runtime.Compiler, runtime.GOOS, runtime.GOARCH,
-		GitCommit, GitBranch, GitState, GitSummary)
-}
-
-func versionInfo() {
-	//info, ok := debug.ReadBuildInfo()
-	//if !ok {
-	//	fmt.Println("Build info not found")
-	//	os.Exit(1)
-	//}
-	//op, err := json.MarshalIndent(info.Settings, "", " ")
-	//if err != nil {
-	//	panic(fmt.Sprintf("error marshalling: %v", err))
-	//}
-	//fmt.Println(string(op))
-
-	info, ok := debug.ReadBuildInfo()
-	if !ok {
-		return
+func GetBuildInfo() BuildInfo {
+	toGitStatus := func(modified bool) string {
+		if modified {
+			return "dirty"
+		} else {
+			return "clean"
+		}
 	}
-	fmt.Println(info)
-	fmt.Println(info.GoVersion)
-	fmt.Println(info.Path)
-	fmt.Println(info.Main)
-	fmt.Println("version: " + info.Main.Version)
-	fmt.Println(info.Main.Path)
-	fmt.Println(info.Main.Sum)
-	fmt.Println(info.Main.Replace)
-	for _, dep := range info.Deps {
-		fmt.Println(*dep)
-	}
-	fmt.Println(info.Settings)
-}
-
-func GetSBOM() {
-	info, ok := debug.ReadBuildInfo()
-	if !ok {
-		return
-	}
-	for _, dep := range info.Deps {
-		fmt.Println(*dep)
+	return BuildInfo{
+		strings.TrimSpace(vcsTag),
+		vcsRevision,
+		strings.TrimSpace(vcsBranch),
+		toGitStatus(vcsModified),
+		vcsTime,
+		goVersion,
+		goCompiler,
+		fmt.Sprintf("%s/%s", goOS, goArch),
 	}
 }

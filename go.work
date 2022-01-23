@@ -6,3 +6,5 @@ use (
 	./cmd/app2
 	./lib
 )
+
+replace github.com/tidwall/btree v1.1.0 => github.com/tidwall/btree v1.1.1-0.20211225170125-a6d3dc1a9409
