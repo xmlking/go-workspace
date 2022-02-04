@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/xmlking/grpc-starter-kit/internal/version"
+	"github.com/xmlking/go-workspace/internal/version"
 )
 
 func TestGetBuildInfo(t *testing.T) {

@@ -5,38 +5,62 @@ Experimenting with **golang-1.18** _multi-module workspaces_
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/xmlking/go-workspace)](https://github.com/xmlking/go-workspace/blob/main/go.mod)
 [![Go](https://github.com/xmlking/go-workspace/actions/workflows/go.yml/badge.svg)](https://github.com/xmlking/go-workspace/actions/workflows/go.yml)
 
+
+## Install
+
+### Working with golang 1.18 (beta)
+
+Refer [gotip](https://github.com/golang/tools/blob/master/gopls/doc/advanced.md)
+
+```bash
+go install golang.org/dl/go1.18beta2@latest
+go1.18beta2 download
+
+cd ~/bin
+ln -s /Users/<username>/sdk/go1.18beta2/bin/go gotip
+```
+
+This will build the latest beta go SDK in `/Users/<username>/sdk/go1.18beta2` <br/> 
+make a link from `/Users/<username>/sdk/go1.18beta2/bin/go` to `~/bin/gotip` which is in your path.
+
+Setting VSCode with [1.18 beta](https://github.com/golang/vscode-go/blob/master/docs/advanced.md)
+
+in this repo, Run: `gotip work sync`
+
 ## Run
 
 ```bash
 # run generate first
-go generate ./...
+gotip generate ./...
 ```
 
 ###
 ```bash
 # root module
-go run ./...
-go test -v ./... 
-go test -v -fuzz=Fuzz ./internal
+gotip run ./...
+gotip test -v ./... 
+gotip test -v -fuzz=Fuzz ./internal
 # lib module
-go test -v ./lib/...
+gotip test -v ./lib/...
 # app modules
-go run ./cmd/app1/...
-go run ./cmd/app2/...
+gotip run ./cmd/app1/...
+gotip run ./cmd/app2/...
 ```
 
+## Build
+
 ```bash
-go generate ./...
-go build -v .
+gotip generate ./...
+gotip build -v .
 # check SBOM
-go version -m go-workspace
+gotip version -m go-workspace
 # run binary
 ./go-workspace
 ```
 ### Workspace commands
 
 ```
-$ go help work
+$ gotip help work
 Usage:
 
         go work <command> [arguments]
@@ -48,6 +72,16 @@ The commands are:
         sync        sync workspace build list to modules
         use         add modules to workspace file
 
+```
+
+```bash
+gotip mod sync
+# `go mod` examples
+gotip mod download
+gotip mod graph
+gotip mod tidy
+gotip mod verify
+gotip mod why -m github.com/ssoroka/slice
 ```
 
 ### Project structure 
