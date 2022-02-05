@@ -75,7 +75,7 @@ The commands are:
 ```
 
 ```bash
-gotip mod sync
+gotip work sync
 # `go mod` examples
 gotip mod download
 gotip mod graph
