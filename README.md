@@ -13,11 +13,11 @@ Experimenting with **golang-1.18** _multi-module workspaces_
 Refer [gotip](https://github.com/golang/tools/blob/master/gopls/doc/advanced.md)
 
 ```bash
-go install golang.org/dl/go1.18beta2@latest
-go1.18beta2 download
+go install golang.org/dl/go1.18rc1@latest
+go1.18rc1 download
 
 cd ~/bin
-ln -s /Users/<username>/sdk/go1.18beta2/bin/go gotip
+ln -s /Users/<username>/sdk/go1.18rc1/bin/go gotip
 ```
 
 This will build the latest beta go SDK in `/Users/<username>/sdk/go1.18beta2` <br/> 
