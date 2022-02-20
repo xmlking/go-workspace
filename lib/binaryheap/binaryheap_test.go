@@ -1,11 +1,12 @@
 package binaryheap
 
 import (
-	"constraints"
 	"math/rand"
 	"sort"
 	"testing"
 	"time"
+
+	"golang.org/x/exp/constraints"
 )
 
 func cmp[T constraints.Ordered](a, b T) bool {

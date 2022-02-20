@@ -5,14 +5,31 @@ import (
 
 	"github.com/rs/zerolog/log"
 	"github.com/ssoroka/slice"
+	"golang.org/x/exp/maps"
+
+	"golang.org/x/exp/slices"
+
 	"github.com/tidwall/btree"
 	"github.com/xmlking/go-workspace/internal/version"
 )
 
 func main() {
+
+	// maps
+	m := map[string]bool{
+		"work": false,
+		"fun":  true,
+	}
+	log.Print("Keys", maps.Keys(m))
+
 	list := []string{"foo", "bar", "zee"}
-	log.Print(slice.Contains(list, "foo"))
-	log.Print(slice.Unique([]string{"A", "B", "C", "A", "B", "C", "B", "C", "A"}))
+	log.Print(slices.Contains(list, "foo"))
+	slices.SortFunc(list, func(a, b string) bool {
+		return a < b
+	})
+	log.Print("IsSorted?", slices.IsSorted(list))
+	log.Print("slices.Compact = ", slices.Compact([]string{"A", "B", "C", "C", "A", "B", "B", "B", "C", "A"}))
+	log.Print("slice.Unique = ", slice.Unique([]string{"A", "B", "C", "C", "A", "B", "B", "B", "C", "A"}))
 
 	s := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
 

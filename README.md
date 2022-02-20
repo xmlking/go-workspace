@@ -8,7 +8,7 @@ Experimenting with **golang-1.18** _multi-module workspaces_
 
 ## Install
 
-### Working with golang 1.18 (beta)
+### Working with golang 1.18 (RC)
 
 Refer [gotip](https://github.com/golang/tools/blob/master/gopls/doc/advanced.md)
 
@@ -17,50 +17,53 @@ go install golang.org/dl/go1.18rc1@latest
 go1.18rc1 download
 
 cd ~/bin
-ln -s /Users/<username>/sdk/go1.18rc1/bin/go gotip
+ln -s /Users/<username>/sdk/go1.18rc1/bin/go .
 ```
 
-This will build the latest beta go SDK in `/Users/<username>/sdk/go1.18beta2` <br/> 
-make a link from `/Users/<username>/sdk/go1.18beta2/bin/go` to `~/bin/gotip` which is in your path.
+This will build the latest beta go SDK in `/Users/<username>/sdk/go1.18rc1` <br/>.
 
-Setting VSCode with [1.18 beta](https://github.com/golang/vscode-go/blob/master/docs/advanced.md)
+Setting VSCode with [1.18 RC](https://github.com/golang/vscode-go/blob/master/docs/advanced.md)
 
-in this repo, Run: `gotip work sync`
+Verify
+```bash
+$ go version  
+go version go1.18rc1 darwin/amd64
+```
 
 ## Run
 
 ```bash
 # run generate first
-gotip generate ./...
+go generate ./...
 ```
 
 ###
 ```bash
 # root module
-gotip run ./...
-gotip test -v ./... 
-gotip test -v -fuzz=Fuzz ./internal
+go run ./...
+go test -v ./... 
+go test -v -fuzz=Fuzz ./internal
 # lib module
-gotip test -v ./lib/...
+go test -v ./lib/...
 # app modules
-gotip run ./cmd/app1/...
-gotip run ./cmd/app2/...
+go run ./cmd/app1/...
+go run ./cmd/app2/...
 ```
 
 ## Build
 
 ```bash
-gotip generate ./...
-gotip build -v .
+go generate ./...
+go build -v .
 # check SBOM
-gotip version -m go-workspace
+go version -m go-workspace
 # run binary
 ./go-workspace
 ```
 ### Workspace commands
 
 ```
-$ gotip help work
+$ go help work
 Usage:
 
         go work <command> [arguments]
@@ -75,13 +78,14 @@ The commands are:
 ```
 
 ```bash
-gotip work sync
+go work sync
 # `go mod` examples
-gotip mod download
-gotip mod graph
-gotip mod tidy
-gotip mod verify
-gotip mod why -m github.com/ssoroka/slice
+go mod download
+go mod graph
+go mod tidy
+go mod verify
+go work sync
+go mod why -m github.com/ssoroka/slice
 ```
 
 ### Project structure 
