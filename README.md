@@ -39,7 +39,7 @@ go run ./cmd/app2/...
 
 ## Build
 
-```bash
+```shell
 go generate ./...
 go build -v .
 # check SBOM
@@ -64,7 +64,7 @@ The commands are:
 
 ```
 
-```bash
+```shell
 go work sync
 # `go mod` examples
 go mod download
