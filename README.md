@@ -64,8 +64,16 @@ The commands are:
 
 ```
 
+Run `go work use -r ./` to recursively add directories in the argument directory with a go.mod file to your workspace. 
+If a directory doesn’t have a go.mod file, or no longer exists, the use directive for that directory is removed from your go.work file.
+
 ```shell
+# recursively add directories to go.work
+go work use -r .
+# pushes the dependencies in the go.work file back into the go.mod files of each workspace module.
 go work sync
+# provides a command-line interface for editing go.work, for use primarily by tools or scripts.
+go work edit
 # `go mod` examples
 go mod download
 go mod graph
@@ -102,3 +110,4 @@ go mod why -m github.com/ssoroka/slice
 
 ## Reference 
 - [Proposal: Multi-Module Workspaces](https://go.googlesource.com/proposal/+/master/design/45713-workspace.md)
+- [Get familiar with workspaces](https://go.dev/blog/get-familiar-with-workspaces?utm_source=GO&utm_medium=social+&utm_campaign=blog+promo)
